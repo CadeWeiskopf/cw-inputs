@@ -1,4 +1,4 @@
-import { React, useEffect, useRef } from "react";
+import React from "react";
 import styles from "./GenericInputWrapper.module.css";
 import { v4 as uuidV4 } from "uuid";
 
