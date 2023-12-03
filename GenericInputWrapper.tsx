@@ -66,9 +66,8 @@ const Radio: React.FC<InputProps & RadioProps> = ({ label, radios }) => {
         {radios.map((radio) => {
           const id = uuidV4();
           return (
-            <div>
+            <div key={id}>
               <GenericInput
-                key={id}
                 id={id}
                 {...radio}
               />
