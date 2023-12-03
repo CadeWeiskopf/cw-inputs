@@ -12,6 +12,11 @@ textarea {
   resize: vertical;
   z-index: 1;
 }
+input:required + label > span::after {
+  content: "*";
+  margin-left: 0.2em;
+  color: #ff7373;
+}
 
 .wrapper {
   box-sizing: border-box;

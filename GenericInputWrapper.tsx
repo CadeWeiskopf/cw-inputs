@@ -18,7 +18,7 @@ type InputProps = {
   attributes?: InputAttributeProps;
 };
 
-const TextInput: React.FC<InputProps> = ({ id, label, attributes }) => {
+const GenericInput: React.FC<InputProps> = ({ id, label, attributes }) => {
   return (
     <>
       <input
@@ -26,7 +26,7 @@ const TextInput: React.FC<InputProps> = ({ id, label, attributes }) => {
         {...attributes}
       />
       <label htmlFor={id}>
-        <div className={styles.labelTextWrapper}>{label}</div>
+        <span className={styles.labelTextWrapper}>{label}</span>
       </label>
     </>
   );
@@ -40,8 +40,28 @@ const TextArea: React.FC<InputProps> = ({ id, label, attributes }) => {
         {...attributes}
       />
       <label htmlFor={id}>
-        <div className={styles.labelTextWrapper}>{label}</div>
+        <span className={styles.labelTextWrapper}>{label}</span>
       </label>
+    </>
+  );
+};
+
+type RadioProps = {
+  radios: { label: string; attributes?: InputAttributeProps }[];
+};
+const Radio: React.FC<InputProps & RadioProps> = ({ label, radios }) => {
+  return (
+    <>
+      <span>{label}</span>
+      {radios.map((radio) => {
+        const id = uuidV4();
+        return (
+          <GenericInput
+            id={id}
+            {...radio}
+          />
+        );
+      })}
     </>
   );
 };
@@ -50,10 +70,15 @@ const TextArea: React.FC<InputProps> = ({ id, label, attributes }) => {
  * Object that maps to all the input types
  */
 const Inputs: {
-  [key: string]: (props: InputProps) => React.JSX.Element;
+  [key: string]: (
+    props: InputProps | (InputProps & RadioProps)
+  ) => React.JSX.Element;
 } = {
-  input: (props: InputProps) => <TextInput {...props} />,
+  input: (props: InputProps) => <GenericInput {...props} />,
   textarea: (props: InputProps) => <TextArea {...props} />,
+  radio: (props: InputProps | RadioProps) => (
+    <Radio {...(props as InputProps & RadioProps)} />
+  ),
 } as const;
 
 /**
@@ -65,24 +90,38 @@ export enum InputTypes {
   INPUT = "input",
   TEXTAREA = "textarea",
   CHECKBOX = "checkbox",
+  RADIO = "radio",
 }
 type GenericInputWrapperProps = {
   inputType: InputTypes;
   label: string;
   attributes?: InputAttributeProps;
+  radioInputs?: RadioProps;
 };
 export const Input: React.FC<GenericInputWrapperProps> = ({
   inputType,
   label,
   attributes,
+  radioInputs,
 }) => {
   const id = `${inputType}-${new Date().getTime()}-${uuidV4()}`;
+  console.log(radioInputs);
+  if (inputType === InputTypes.RADIO) {
+    radioInputs?.radios.forEach((radio) => {
+      if (!radio.attributes) {
+        radio.attributes = {};
+      }
+      radio.attributes.type = "radio";
+      radio.attributes.name = id;
+    });
+  }
   return (
     <div className={styles.wrapper}>
       {Inputs[inputType]({
         id,
         label,
         attributes,
+        radios: radioInputs?.radios,
       })}
     </div>
   );
