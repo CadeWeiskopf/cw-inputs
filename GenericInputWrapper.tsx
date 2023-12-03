@@ -57,6 +57,7 @@ const Radio: React.FC<InputProps & RadioProps> = ({ label, radios }) => {
         const id = uuidV4();
         return (
           <GenericInput
+            key={id}
             id={id}
             {...radio}
           />
@@ -105,7 +106,6 @@ export const Input: React.FC<GenericInputWrapperProps> = ({
   radioInputs,
 }) => {
   const id = `${inputType}-${new Date().getTime()}-${uuidV4()}`;
-  console.log(radioInputs);
   if (inputType === InputTypes.RADIO) {
     radioInputs?.radios.forEach((radio) => {
       if (!radio.attributes) {
