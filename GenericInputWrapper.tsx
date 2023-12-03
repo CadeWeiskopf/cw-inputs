@@ -47,22 +47,35 @@ const TextArea: React.FC<InputProps> = ({ id, label, attributes }) => {
 };
 
 type RadioProps = {
+  required: boolean; // TODO: maybe move this to generic level
   radios: { label: string; attributes?: InputAttributeProps }[];
 };
 const Radio: React.FC<InputProps & RadioProps> = ({ label, radios }) => {
+  const requiredInput = radios.reduce((a, b) => {
+    return !!(a && b.attributes?.required);
+  }, true);
   return (
     <>
-      <span>{label}</span>
-      {radios.map((radio) => {
-        const id = uuidV4();
-        return (
-          <GenericInput
-            key={id}
-            id={id}
-            {...radio}
-          />
-        );
-      })}
+      <span
+        data-cw-input-required={requiredInput}
+        className={styles.radioInputLabel}
+      >
+        {label}
+      </span>
+      <div className={styles.radioInputGroup}>
+        {radios.map((radio) => {
+          const id = uuidV4();
+          return (
+            <div>
+              <GenericInput
+                key={id}
+                id={id}
+                {...radio}
+              />
+            </div>
+          );
+        })}
+      </div>
     </>
   );
 };
@@ -113,6 +126,7 @@ export const Input: React.FC<GenericInputWrapperProps> = ({
       }
       radio.attributes.type = "radio";
       radio.attributes.name = id;
+      radio.attributes.required = radioInputs.required;
     });
   }
   return (
