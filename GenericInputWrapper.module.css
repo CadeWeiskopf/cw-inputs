@@ -5,8 +5,9 @@ textarea {
   background: transparent;
   border: 0;
   color: var(--text-secondary);
-  margin-top: 16px;
+  margin-top: 1.5em;
   outline: none;
+  font-size: 12px;
 }
 textarea {
   resize: vertical;
@@ -28,7 +29,7 @@ input:not([type="radio"]):required + label > span::after,
   justify-content: center;
   align-items: center;
   position: relative;
-  padding: 1em;
+  padding: 0.75em;
 }
 
 .wrapper input:not([type="radio"]) + label,
@@ -39,10 +40,11 @@ input:not([type="radio"]):required + label > span::after,
   position: absolute;
   background-color: transparent;
   font-size: 16px;
+  padding-top: 0.5em;
 }
 .labelTextWrapper {
-  padding-top: 0.225em;
-  padding-left: 0.85em;
+  /* padding-top: 1em; */
+  padding-left: 0.75em;
 }
 
 .radioInputGroup {
