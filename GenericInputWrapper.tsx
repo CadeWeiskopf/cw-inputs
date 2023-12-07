@@ -46,11 +46,12 @@ const TextArea: React.FC<InputProps> = ({ id, label, attributes }) => {
   );
 };
 
+type TRadio = { key: string; label: string; attributes?: InputAttributeProps };
 type RadioProps = {
   required: boolean; // TODO: maybe move this to generic level
-  radios: { label: string; attributes?: InputAttributeProps }[];
+  radios: TRadio[];
 };
-const Radio: React.FC<InputProps & RadioProps> = ({ label, radios }) => {
+const Radio: React.FC<InputProps & RadioProps> = ({ id, label, radios }) => {
   const requiredInput = radios.reduce((a, b) => {
     return !!(a && b.attributes?.required);
   }, true);
@@ -63,12 +64,12 @@ const Radio: React.FC<InputProps & RadioProps> = ({ label, radios }) => {
         {label}
       </span>
       <div className={styles.radioInputGroup}>
-        {radios.map((radio) => {
-          const id = uuidV4();
+        {radios.map((radio, index) => {
+          const key = uuidV4();
           return (
-            <div key={id}>
+            <div key={radio.key}>
               <GenericInput
-                id={id}
+                id={key}
                 {...radio}
               />
             </div>
@@ -119,7 +120,12 @@ export const Input: React.FC<GenericInputWrapperProps> = ({
 }) => {
   const id = `${inputType}-${new Date().getTime()}-${uuidV4()}`;
   if (inputType === InputTypes.RADIO) {
+    const keySet = new Set<string>();
     radioInputs?.radios.forEach((radio) => {
+      if (keySet.has(radio.key)) {
+        throw Error(`Duplicate key "${radio.key}" found in radios.`);
+      }
+      keySet.add(radio.key);
       if (!radio.attributes) {
         radio.attributes = {};
       }
